@@ -20,6 +20,8 @@
     }
 
     main {
+      position: relative;
+      overflow: hidden;
       width: min(90vw, 360px);
       padding: 32px;
       text-align: center;
@@ -64,6 +66,96 @@
     button:active {
       transform: translateY(1px);
     }
+
+    .effect {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .effect.show {
+      opacity: 1;
+    }
+
+    .spark {
+      position: absolute;
+      left: 50%;
+      top: 44%;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--color);
+      transform: translate(-50%, -50%);
+    }
+
+    .effect.show .spark {
+      animation: burst 760ms ease-out forwards;
+    }
+
+    .spark:nth-child(1) {
+      --x: 0px;
+      --y: -92px;
+      --color: #f97316;
+    }
+
+    .spark:nth-child(2) {
+      --x: 72px;
+      --y: -68px;
+      --color: #0ea5e9;
+    }
+
+    .spark:nth-child(3) {
+      --x: 96px;
+      --y: 0px;
+      --color: #14b8a6;
+    }
+
+    .spark:nth-child(4) {
+      --x: 68px;
+      --y: 72px;
+      --color: #eab308;
+    }
+
+    .spark:nth-child(5) {
+      --x: 0px;
+      --y: 92px;
+      --color: #ec4899;
+    }
+
+    .spark:nth-child(6) {
+      --x: -68px;
+      --y: 72px;
+      --color: #8b5cf6;
+    }
+
+    .spark:nth-child(7) {
+      --x: -96px;
+      --y: 0px;
+      --color: #ef4444;
+    }
+
+    .spark:nth-child(8) {
+      --x: -72px;
+      --y: -68px;
+      --color: #22c55e;
+    }
+
+    @keyframes burst {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.2);
+      }
+
+      70% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.2);
+      }
+    }
   </style>
 </head>
 <body>
@@ -71,16 +163,37 @@
     <h1>カウンター</h1>
     <p class="count" id="count">0</p>
     <button type="button" id="countButton">カウントを増やす</button>
+    <div class="effect" id="effect" aria-hidden="true">
+      <span class="spark"></span>
+      <span class="spark"></span>
+      <span class="spark"></span>
+      <span class="spark"></span>
+      <span class="spark"></span>
+      <span class="spark"></span>
+      <span class="spark"></span>
+      <span class="spark"></span>
+    </div>
   </main>
 
   <script>
     const countDisplay = document.getElementById("count");
     const countButton = document.getElementById("countButton");
+    const effect = document.getElementById("effect");
     let count = 0;
 
     countButton.addEventListener("click", () => {
       count += 1;
       countDisplay.textContent = count;
+
+      if (count === 20) {
+        effect.classList.remove("show");
+        void effect.offsetWidth;
+        effect.classList.add("show");
+      }
+    });
+
+    effect.addEventListener("animationend", () => {
+      effect.classList.remove("show");
     });
   </script>
 </body>
