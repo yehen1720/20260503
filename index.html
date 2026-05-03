@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAS風ミニ実行環境</title>
+  <title>浜銀総研風 SASミニ分析環境</title>
   <style>
     * {
       box-sizing: border-box;
@@ -14,14 +14,28 @@
       min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #172033;
-      background: #f8fafc;
+      background:
+        linear-gradient(180deg, #edf4fb 0, #f8fafc 260px),
+        #f8fafc;
     }
 
     header {
-      padding: 24px 28px 18px;
-      color: #172033;
+      position: relative;
+      padding: 22px 28px 20px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #003f7d 0%, #005bac 58%, #0f766e 100%);
+      border-bottom: 4px solid #d71920;
+      box-shadow: 0 18px 40px rgba(0, 63, 125, 0.18);
+    }
+
+    header::after {
+      position: absolute;
+      right: 28px;
+      bottom: -4px;
+      width: 180px;
+      height: 4px;
+      content: "";
       background: #ffffff;
-      border-bottom: 1px solid #d8dee9;
     }
 
     h1 {
@@ -32,8 +46,30 @@
 
     .subtitle {
       margin: 6px 0 0;
-      color: #526173;
+      color: #e6f2ff;
       font-size: 14px;
+    }
+
+    .brand-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      padding: 4px 8px;
+      color: #003f7d;
+      background: #ffffff;
+      border-radius: 4px;
+    }
+
+    .brand-unit {
+      color: #dbeafe;
     }
 
     main {
@@ -49,7 +85,7 @@
       border: 1px solid #d8dee9;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 14px 36px rgba(0, 63, 125, 0.1);
     }
 
     .section-title {
@@ -61,7 +97,7 @@
       padding: 10px 14px;
       font-weight: 700;
       color: #172033;
-      background: #eef3f8;
+      background: linear-gradient(90deg, #eef6ff, #f8fafc);
       border-bottom: 1px solid #d8dee9;
     }
 
@@ -75,9 +111,9 @@
       font: 15px/1.55 Consolas, "Courier New", monospace;
       color: #172033;
       background:
-        linear-gradient(90deg, rgba(29, 78, 216, 0.08) 0 3px, transparent 3px),
+        linear-gradient(90deg, rgba(0, 91, 172, 0.11) 0 3px, transparent 3px),
         #fbfdff;
-      caret-color: #1d4ed8;
+      caret-color: #005bac;
     }
 
     .toolbar {
@@ -106,8 +142,8 @@
 
     .primary {
       color: #ffffff;
-      background: #1d4ed8;
-      box-shadow: 0 8px 18px rgba(29, 78, 216, 0.2);
+      background: #005bac;
+      box-shadow: 0 8px 18px rgba(0, 91, 172, 0.22);
     }
 
     .secondary {
@@ -131,8 +167,34 @@
 
     .tab.active {
       color: #ffffff;
-      background: #1d4ed8;
-      border-color: #1d4ed8;
+      background: #005bac;
+      border-color: #005bac;
+    }
+
+    .dataset-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid #d8dee9;
+      background: #f8fafc;
+    }
+
+    .dataset-controls label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    select {
+      min-height: 40px;
+      padding: 0 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      color: #172033;
+      background: #ffffff;
+      font: inherit;
     }
 
     .output {
@@ -152,38 +214,77 @@
 
     table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       font-size: 14px;
       overflow: hidden;
       border: 1px solid #d8dee9;
       border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
     }
 
     h2 {
-      margin: 0 0 10px;
-      font-size: 18px;
+      margin: 0 0 6px;
+      color: #0f172a;
+      font-size: 20px;
+      font-weight: 800;
     }
 
     .table-meta {
-      margin: 0 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 5px 9px;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
       color: #64748b;
+      background: #eff6ff;
       font-size: 13px;
     }
 
     th,
     td {
-      padding: 8px 10px;
+      padding: 11px 12px;
       text-align: left;
       border-bottom: 1px solid #d8dee9;
     }
 
     th {
-      color: #172033;
-      background: #e0f2fe;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      color: #ffffff;
+      background: #005bac;
+      font-size: 13px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .obs-head,
+    .obs-cell {
+      width: 64px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .obs-cell {
+      color: #64748b;
+      background: #f8fafc;
+      font-weight: 700;
     }
 
     tr:nth-child(even) td {
       background: #f8fafc;
+    }
+
+    tr:hover td {
+      background: #eff6ff;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
     }
 
     .note {
@@ -256,6 +357,33 @@
       margin: 0 0 10px;
     }
 
+    .feedback {
+      margin: 10px 0 0;
+      padding: 12px;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: #7f1d1d;
+      background: #fff1f2;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .feedback.good {
+      border-color: #bbf7d0;
+      color: #14532d;
+      background: #f0fdf4;
+    }
+
+    .feedback-title {
+      margin: 0 0 6px;
+      font-weight: 800;
+    }
+
+    .feedback ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
     @media (max-width: 820px) {
       main {
         grid-template-columns: 1fr;
@@ -269,8 +397,12 @@
 </head>
 <body>
   <header>
-    <h1>SAS風ミニ実行環境</h1>
-    <p class="subtitle">dataステップ、where、var、title、四則演算、proc printを疑似実行できます。</p>
+    <p class="brand-line">
+      <span class="brand-mark">Hamagin Research Institute</span>
+      <span class="brand-unit">Information Strategy Consulting / Data Advisory Lab</span>
+    </p>
+    <h1>地域企業データ分析ワークベンチ</h1>
+    <p class="subtitle">Decision-making by Fact を体験する、情報戦略コンサルティング部門風のSASミニ分析環境です。</p>
   </header>
 
   <main>
@@ -278,21 +410,33 @@
       <div class="section-title">
         <span>エディタ</span>
       </div>
-      <textarea id="editor" spellcheck="false">data scores;
-input name $ math english;
-total = math + english;
-average = total / 2;
+      <textarea id="editor" spellcheck="false">data regional_survey;
+input company $ area $ sector $ sales profit employees digital_index export_ratio risk_score;
+profit_margin = profit / sales * 100;
+sales_per_employee = sales / employees;
 datalines;
-Tanaka 80 92
-Suzuki 74 88
-Sato 95 91
+YokohamaWorks Yokohama Manufacturing 1280 96 210 78 24 42
+KawasakiTech Kawasaki IT 940 118 86 91 18 35
+ShonanFoods Shonan Food 620 34 145 52 6 57
+OdawaraLogi Seisho Logistics 710 41 130 63 12 61
+SagamiParts Sagamihara Manufacturing 860 52 175 67 28 66
+MinatoDesign Yokohama Service 420 48 38 88 9 29
+KamakuraBio Shonan Healthcare 530 62 64 84 15 33
+TsurumiMetal Yokohama Manufacturing 1150 70 220 59 31 74
+AtsugiSystems Kenou IT 760 82 72 86 22 38
+HakoneTourism Seisho Tourism 390 21 96 47 4 69
+FujisawaRetail Shonan Retail 580 26 118 55 3 58
+KawasakiRobot Kawasaki Manufacturing 1420 140 195 93 41 36
+YamatoCare Kenou Healthcare 450 39 102 62 2 44
+MiuraMarine Miura Food 310 18 74 49 17 63
+EbinaMobility Kenou Logistics 690 55 88 74 19 46
 ;
 run;
 
-proc print data=scores;
-where total >= 165 and english > 90;
-var name math english total average;
-title "High Score Students";
+proc print data=regional_survey;
+where profit_margin >= 8 and digital_index >= 75;
+var company area sector sales profit profit_margin digital_index risk_score;
+title "Priority Regional Firms";
 run;</textarea>
       <div class="toolbar">
         <button class="primary" type="button" id="runButton">実行</button>
@@ -300,18 +444,37 @@ run;</textarea>
         <button class="secondary" type="button" id="sampleButton">サンプルに戻す</button>
         <button class="secondary" type="button" id="clearButton">ログを消す</button>
       </div>
+      <div class="dataset-controls">
+        <label for="rowCount">調査データ量</label>
+        <select id="rowCount">
+          <option value="15">15社</option>
+          <option value="30">30社</option>
+          <option value="60">60社</option>
+          <option value="120">120社</option>
+        </select>
+        <button class="secondary" type="button" id="generateDataButton">調査データをランダム生成</button>
+      </div>
       <div class="challenge" id="challengeBox">
-        <p class="challenge-title">初学者向けミッション</p>
+        <p class="challenge-title">情報戦略フェーズ演習</p>
         <div class="difficulty" aria-label="問題の難易度">
-          <button class="difficulty-button active" type="button" data-level="basic">初級</button>
-          <button class="difficulty-button" type="button" data-level="standard">中級</button>
-          <button class="difficulty-button" type="button" data-level="advanced">上級</button>
+          <button class="difficulty-button active" type="button" data-level="level1">ISC-01 現状把握</button>
+          <button class="difficulty-button" type="button" data-level="level2">ISC-02 データ棚卸</button>
+          <button class="difficulty-button" type="button" data-level="level3">ISC-03 分布確認</button>
+          <button class="difficulty-button" type="button" data-level="level4">ISC-04 仮説集計</button>
+          <button class="difficulty-button" type="button" data-level="level5">ISC-05 リスク抽出</button>
+          <button class="difficulty-button" type="button" data-level="level6">ISC-06 優先順位付け</button>
+          <button class="difficulty-button" type="button" data-level="level7">ISC-07 セグメント検証</button>
+          <button class="difficulty-button" type="button" data-level="level8">ISC-08 施策比較</button>
+          <button class="difficulty-button" type="button" data-level="level9">ISC-09 モデル候補</button>
+          <button class="difficulty-button" type="button" data-level="level10">ISC-10 提言資料</button>
         </div>
-        <p class="challenge-text" id="challengeText">「次の問題」を押すと、PROC PRINTで作る表のお題が表示されます。</p>
+        <p class="challenge-text" id="challengeText">「次の問題」を押すと、地域企業調査レポートのお題が表示されます。</p>
         <div class="challenge-actions">
+          <button class="primary" type="button" id="checkButton">答え合わせ</button>
           <button class="secondary" type="button" id="answerButton">答えを見る</button>
         </div>
-        <pre class="challenge-code" id="challengeHint" hidden>例: where total >= 165; var name total;</pre>
+        <pre class="challenge-code" id="challengeHint" hidden>例: where profit_margin >= 8; var company area sector;</pre>
+        <div class="feedback" id="feedbackBox" hidden></div>
       </div>
     </section>
 
@@ -327,112 +490,253 @@ run;</textarea>
         <pre class="muted">実行すると、ここにSAS風の足あとが残ります。</pre>
       </div>
       <div class="output" id="outputView" hidden>
-        <pre class="muted">PROC PRINTで作った表は、ここにきれいに並びます。</pre>
+        <pre class="muted">PROCで作った分析表は、ここにきれいに並びます。</pre>
       </div>
     </section>
   </main>
 
   <script>
-    const sampleCode = `data scores;
-input name $ math english;
-total = math + english;
-average = total / 2;
-datalines;
-Tanaka 80 92
-Suzuki 74 88
-Sato 95 91
-;
-run;
-
-proc print data=scores;
-where total >= 165 and english > 90;
-var name math english total average;
-title "High Score Students";
-run;`;
+    const areaPool = ["Yokohama", "Kawasaki", "Shonan", "Seisho", "Kenou", "Miura"];
+    const sectorPool = ["Manufacturing", "IT", "Food", "Logistics", "Service", "Healthcare", "Retail", "Tourism", "Finance"];
+    const companyPrefixes = ["Yokohama", "Kawasaki", "Shonan", "Odawara", "Sagami", "Minato", "Kamakura", "Tsurumi", "Atsugi", "Hakone", "Fujisawa", "Yamato", "Miura", "Ebina", "Kanagawa", "Bay", "Harbor", "Mirai", "Blue", "Nexus"];
+    const companySuffixes = ["Works", "Tech", "Foods", "Logi", "Parts", "Design", "Bio", "Metal", "Systems", "Tourism", "Retail", "Robot", "Care", "Marine", "Mobility", "Analytics", "Link", "Solutions", "Craft", "Capital"];
+    const sampleCode = generateRegionalSurveyCode(15);
 
     const editor = document.getElementById("editor");
     const runButton = document.getElementById("runButton");
     const challengeButton = document.getElementById("challengeButton");
+    const checkButton = document.getElementById("checkButton");
     const answerButton = document.getElementById("answerButton");
+    const generateDataButton = document.getElementById("generateDataButton");
+    const rowCount = document.getElementById("rowCount");
     const sampleButton = document.getElementById("sampleButton");
     const clearButton = document.getElementById("clearButton");
     const challengeText = document.getElementById("challengeText");
     const challengeHint = document.getElementById("challengeHint");
+    const feedbackBox = document.getElementById("feedbackBox");
     const logView = document.getElementById("logView");
     const outputView = document.getElementById("outputView");
     const tabs = document.querySelectorAll(".tab");
     const difficultyButtons = document.querySelectorAll(".difficulty-button");
     const challenges = {
-      basic: [
+      level1: [
         {
-          text: "合計点が165点以上の人だけを表示する表を作成してみよう。表示する列は name、total、average にします。",
-          hint: `proc print data=scores;
-where total >= 165;
-var name total average;
-title "Total 165 or More";
-run;`
-        },
-        {
-          text: "英語が90点より高い人だけを表示する表を作成してみよう。表示する列は name、english、total にします。",
-          hint: `proc print data=scores;
-where english > 90;
-var name english total;
-title "English Stars";
+          text: "利益率が8%以上の企業を抽出し、company、area、sector、profit_margin の順で一覧化してください。",
+          hint: `proc print data=regional_survey;
+where profit_margin >= 8;
+var company area sector profit_margin;
+title "High Margin Firms";
 run;`
         }
       ],
-      standard: [
+      level2: [
         {
-          text: "数学が80点以上、かつ英語が90点以上の人を表示する表を作成してみよう。",
-          hint: `proc print data=scores;
-where math >= 80 and english >= 90;
-var name math english;
-title "Balanced Scores";
-run;`
-        },
-        {
-          text: "Suzukiさん以外、または合計点が180点以上の人を表示する表を作成してみよう。",
-          hint: `proc print data=scores;
-where name ^= "Suzuki" or total >= 180;
-var name math english total;
-title "Selected Students";
+          text: "デジタル化指数が80以上の企業を抽出し、地域、業種、売上、従業員数も含めた表を作成してください。",
+          hint: `proc print data=regional_survey;
+where digital_index >= 80;
+var company area sector sales employees digital_index;
+title "Digital Advanced Firms";
 run;`
         }
       ],
-      advanced: [
+      level3: [
         {
-          text: "Suzukiさん以外で、合計点が165点以上の人だけを表示する表を作成してみよう。",
-          hint: `proc print data=scores;
-where name ^= "Suzuki" and total >= 165;
-var name math english total average;
-title "High Scores Without Suzuki";
+          text: "地域別の企業数を確認する頻度表を作成してください。調査母集団の地域分布を見る用途です。",
+          hint: `proc freq data=regional_survey;
+tables area;
+title "Area Distribution";
 run;`
-        },
+        }
+      ],
+      level4: [
         {
-          text: "平均点が85点以上、または英語が92点以上の人を表示する表を作成してみよう。",
-          hint: `proc print data=scores;
-where average >= 85 or english >= 92;
-var name english average total;
-title "Advanced Filter";
+          text: "業種別に sales、profit、employees の平均、最小、最大を集計してください。業種間比較の下表です。",
+          hint: `proc means data=regional_survey;
+class sector;
+var sales profit employees;
+title "Sector Summary";
+run;`
+        }
+      ],
+      level5: [
+        {
+          text: "risk_score が60以上、かつ export_ratio が10以上の企業を抽出してください。海外取引を持つリスク確認先の一覧です。",
+          hint: `proc print data=regional_survey;
+where risk_score >= 60 and export_ratio >= 10;
+var company area sector export_ratio risk_score;
+title "Export Risk Watch";
+run;`
+        }
+      ],
+      level6: [
+        {
+          text: "利益率の高い順に並べ替えたデータセット margin_rank を作成し、その上位候補を表で出してください。",
+          hint: `proc sort data=regional_survey out=margin_rank;
+by descending profit_margin;
+run;
+
+proc print data=margin_rank;
+where profit_margin >= 8;
+var company area sector profit_margin sales_per_employee;
+title "Margin Ranking";
+run;`
+        }
+      ],
+      level7: [
+        {
+          text: "area と sector それぞれの企業数を確認してください。地域分布と業種分布を同じ出力で見るための頻度表です。",
+          hint: `proc freq data=regional_survey;
+tables area sector;
+title "Area And Sector Counts";
+run;`
+        }
+      ],
+      level8: [
+        {
+          text: "横浜・川崎の企業に限定し、sales、profit、digital_index、risk_score の平均と合計を比較してください。",
+          hint: `proc means data=regional_survey;
+where area = "Yokohama" or area = "Kawasaki";
+class area;
+var sales profit digital_index risk_score;
+title "Yokohama Kawasaki Comparison";
+run;`
+        }
+      ],
+      level9: [
+        {
+          text: "高成長候補を定義します。条件は「digital_indexが80以上かつrisk_scoreが45未満」または「profit_marginが10以上かつemployeesが100未満」です。列順は company、area、sector、profit_margin、digital_index、risk_score、employees。",
+          hint: `proc print data=regional_survey;
+where (digital_index >= 80 and risk_score < 45) or (profit_margin >= 10 and employees < 100);
+var company area sector profit_margin digital_index risk_score employees;
+title "Growth Candidate Screen";
+run;`
+        }
+      ],
+      level10: [
+        {
+          text: "ISC-10 提言資料レベルです。まず sales_per_employee の高い順に productivity_rank を作成し、その後「risk_scoreが50未満、かつ profit_marginが8以上、かつ digital_indexが75以上」の企業だけを、指定列順で表にしてください。",
+          hint: `proc sort data=regional_survey out=productivity_rank;
+by descending sales_per_employee;
+run;
+
+proc print data=productivity_rank;
+where risk_score < 50 and profit_margin >= 8 and digital_index >= 75;
+var company area sector sales_per_employee profit_margin digital_index risk_score;
+title "Final Recommendation Screen";
 run;`
         }
       ]
     };
     let datasets = {};
-    let currentDifficulty = "basic";
+    let currentDifficulty = "level1";
+    let currentChallenge = null;
     let challengeIndex = {
-      basic: -1,
-      standard: -1,
-      advanced: -1
+      level1: -1,
+      level2: -1,
+      level3: -1,
+      level4: -1,
+      level5: -1,
+      level6: -1,
+      level7: -1,
+      level8: -1,
+      level9: -1,
+      level10: -1
     };
 
     function tokenize(program) {
-      return program
+      const lines = program
         .replace(/\/\*[\s\S]*?\*\//g, "")
         .replace(/\r/g, "")
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line && !/^\*.*;?$/.test(line));
+        .split("\n");
+      const statements = [];
+      let buffer = "";
+      let inDatalines = false;
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line || /^\*.*;?$/.test(line)) {
+          continue;
+        }
+
+        if (inDatalines) {
+          statements.push(line);
+          if (line === ";") {
+            inDatalines = false;
+          }
+          continue;
+        }
+
+        buffer = buffer ? `${buffer} ${line}` : line;
+
+        if (/;\s*$/.test(line)) {
+          statements.push(buffer);
+          if (/^(datalines|cards)\s*;?$/i.test(buffer)) {
+            inDatalines = true;
+          }
+          buffer = "";
+        }
+      }
+
+      if (buffer) {
+        statements.push(buffer);
+      }
+
+      return statements;
+    }
+
+    function generateRegionalSurveyCode(count) {
+      const usedNames = new Set();
+      const rows = [];
+
+      for (let index = 0; index < count; index += 1) {
+        const area = pick(areaPool);
+        const sector = pick(sectorPool);
+        const company = uniqueCompanyName(usedNames, area);
+        const sales = randomInt(260, 1850);
+        const marginBase = randomInt(3, 14);
+        const profit = Math.max(8, Math.round(sales * marginBase / 100 + randomInt(-12, 18)));
+        const employees = randomInt(28, 260);
+        const digitalIndex = clamp(randomInt(42, 96) + (sector === "IT" ? 8 : 0) + (sector === "Tourism" ? -4 : 0), 25, 99);
+        const exportRatio = clamp(randomInt(0, 45) + (sector === "Manufacturing" ? 8 : 0) + (sector === "Food" ? 4 : 0), 0, 70);
+        const riskScore = clamp(randomInt(25, 78) + (sales < 500 ? 8 : 0) - (digitalIndex > 85 ? 7 : 0), 12, 92);
+        rows.push(`${company} ${area} ${sector} ${sales} ${profit} ${employees} ${digitalIndex} ${exportRatio} ${riskScore}`);
+      }
+
+      return `data regional_survey;
+input company $ area $ sector $ sales profit employees digital_index export_ratio risk_score;
+profit_margin = profit / sales * 100;
+sales_per_employee = sales / employees;
+datalines;
+${rows.join("\n")}
+;
+run;
+
+proc print data=regional_survey;
+where profit_margin >= 8 and digital_index >= 75;
+var company area sector sales profit profit_margin digital_index risk_score;
+title "Priority Regional Firms";
+run;`;
+    }
+
+    function pick(values) {
+      return values[Math.floor(Math.random() * values.length)];
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function uniqueCompanyName(usedNames, area) {
+      let name = "";
+      do {
+        name = `${pick(companyPrefixes)}${pick(companySuffixes)}${randomInt(1, 99)}`;
+      } while (usedNames.has(name));
+      usedNames.add(name);
+      return name;
     }
 
     function parseValue(value) {
@@ -488,6 +792,9 @@ run;`
 
     function runDataStep(lines, startIndex, log) {
       const dataMatch = lines[startIndex].match(/^data\s+([A-Za-z_][A-Za-z0-9_]*)\s*;?$/i);
+      if (!dataMatch) {
+        throw new Error(`dataステップの開始文を読めません: ${lines[startIndex]}`);
+      }
       const name = dataMatch[1];
       let inputColumns = [];
       const assignments = [];
@@ -626,6 +933,175 @@ run;`
       return runIndex + 1;
     }
 
+    function runProcSort(lines, startIndex, log) {
+      const firstLine = lines[startIndex];
+      const dataMatch = firstLine.match(/data\s*=\s*([A-Za-z_][A-Za-z0-9_]*)/i);
+      const outMatch = firstLine.match(/out\s*=\s*([A-Za-z_][A-Za-z0-9_]*)/i);
+      const sourceName = dataMatch ? dataMatch[1].toLowerCase() : Object.keys(datasets)[0];
+      const outputName = outMatch ? outMatch[1].toLowerCase() : sourceName;
+      let byColumns = [];
+      let runIndex = -1;
+
+      for (let i = startIndex + 1; i < lines.length; i += 1) {
+        if (/^run\s*;?$/i.test(lines[i])) {
+          runIndex = i;
+          break;
+        }
+
+        const byMatch = lines[i].match(/^by\s+(.+?)\s*;?$/i);
+        if (byMatch) {
+          const tokens = stripStatementEnd(byMatch[1]).split(/\s+/).filter(Boolean);
+          for (let index = 0; index < tokens.length; index += 1) {
+            if (/^descending$/i.test(tokens[index])) {
+              byColumns.push({ name: tokens[index + 1], direction: -1 });
+              index += 1;
+            } else {
+              byColumns.push({ name: tokens[index], direction: 1 });
+            }
+          }
+        }
+      }
+
+      if (runIndex < 0) {
+        throw new Error("proc sort: run; が見つかりません");
+      }
+
+      if (!sourceName || !datasets[sourceName]) {
+        throw new Error(`proc sort: データセット ${sourceName || "(未指定)"} が見つかりません`);
+      }
+
+      if (byColumns.length === 0) {
+        throw new Error("proc sort: by文が必要です");
+      }
+
+      const rows = [...datasets[sourceName]];
+      const availableColumns = Object.keys(rows[0] ?? {});
+      const missingColumns = byColumns.map((column) => column.name).filter((name) => !availableColumns.includes(name));
+      if (missingColumns.length) {
+        throw new Error(`by: 変数 ${missingColumns.join(", ")} が見つかりません`);
+      }
+
+      rows.sort((left, right) => {
+        for (const column of byColumns) {
+          if (left[column.name] < right[column.name]) return -1 * column.direction;
+          if (left[column.name] > right[column.name]) return 1 * column.direction;
+        }
+        return 0;
+      });
+
+      datasets[outputName] = rows;
+      log.push(`NOTE: PROC SORT は WORK.${outputName} を作成しました。観測数 ${rows.length}。`);
+
+      return runIndex + 1;
+    }
+
+    function runProcMeans(lines, startIndex, log, output) {
+      const firstLine = lines[startIndex];
+      const dataMatch = firstLine.match(/data\s*=\s*([A-Za-z_][A-Za-z0-9_]*)/i);
+      const name = dataMatch ? dataMatch[1].toLowerCase() : Object.keys(datasets)[0];
+      let whereExpression = "";
+      let selectedColumns = [];
+      let classColumn = "";
+      let title = "";
+      let runIndex = -1;
+
+      for (let i = startIndex + 1; i < lines.length; i += 1) {
+        if (/^run\s*;?$/i.test(lines[i])) {
+          runIndex = i;
+          break;
+        }
+
+        const whereMatch = lines[i].match(/^where\s+(.+?)\s*;?$/i);
+        if (whereMatch) {
+          whereExpression = stripStatementEnd(whereMatch[1]);
+          continue;
+        }
+
+        const varMatch = lines[i].match(/^var\s+(.+?)\s*;?$/i);
+        if (varMatch) {
+          selectedColumns = stripStatementEnd(varMatch[1]).split(/\s+/).filter(Boolean);
+          continue;
+        }
+
+        const classMatch = lines[i].match(/^class\s+([A-Za-z_][A-Za-z0-9_]*)\s*;?$/i);
+        if (classMatch) {
+          classColumn = classMatch[1];
+          continue;
+        }
+
+        const titleMatch = lines[i].match(/^title\s+["']?(.+?)["']?\s*;?$/i);
+        if (titleMatch) {
+          title = stripStatementEnd(titleMatch[1]).replace(/^["']|["']$/g, "");
+        }
+      }
+
+      if (runIndex < 0) {
+        throw new Error("proc means: run; が見つかりません");
+      }
+
+      if (!name || !datasets[name]) {
+        throw new Error(`proc means: データセット ${name || "(未指定)"} が見つかりません`);
+      }
+
+      const rows = whereExpression ? datasets[name].filter((row) => evaluateWhere(whereExpression, row)) : [...datasets[name]];
+      output.push(renderMeans(name, rows, selectedColumns, classColumn, title));
+      log.push(`NOTE: PROC MEANS は WORK.${name} を集計しました。対象観測数 ${rows.length}。`);
+
+      return runIndex + 1;
+    }
+
+    function runProcFreq(lines, startIndex, log, output) {
+      const firstLine = lines[startIndex];
+      const dataMatch = firstLine.match(/data\s*=\s*([A-Za-z_][A-Za-z0-9_]*)/i);
+      const name = dataMatch ? dataMatch[1].toLowerCase() : Object.keys(datasets)[0];
+      let whereExpression = "";
+      let tableColumns = [];
+      let title = "";
+      let runIndex = -1;
+
+      for (let i = startIndex + 1; i < lines.length; i += 1) {
+        if (/^run\s*;?$/i.test(lines[i])) {
+          runIndex = i;
+          break;
+        }
+
+        const whereMatch = lines[i].match(/^where\s+(.+?)\s*;?$/i);
+        if (whereMatch) {
+          whereExpression = stripStatementEnd(whereMatch[1]);
+          continue;
+        }
+
+        const tablesMatch = lines[i].match(/^tables\s+(.+?)\s*;?$/i);
+        if (tablesMatch) {
+          tableColumns = stripStatementEnd(tablesMatch[1]).split(/\s+/).filter(Boolean);
+          continue;
+        }
+
+        const titleMatch = lines[i].match(/^title\s+["']?(.+?)["']?\s*;?$/i);
+        if (titleMatch) {
+          title = stripStatementEnd(titleMatch[1]).replace(/^["']|["']$/g, "");
+        }
+      }
+
+      if (runIndex < 0) {
+        throw new Error("proc freq: run; が見つかりません");
+      }
+
+      if (!name || !datasets[name]) {
+        throw new Error(`proc freq: データセット ${name || "(未指定)"} が見つかりません`);
+      }
+
+      if (tableColumns.length === 0) {
+        throw new Error("proc freq: tables文が必要です");
+      }
+
+      const rows = whereExpression ? datasets[name].filter((row) => evaluateWhere(whereExpression, row)) : [...datasets[name]];
+      output.push(renderFreq(name, rows, tableColumns, title));
+      log.push(`NOTE: PROC FREQ は WORK.${name} の頻度表を作成しました。対象観測数 ${rows.length}。`);
+
+      return runIndex + 1;
+    }
+
     function renderTable(name, rows, selectedColumns = [], title = "") {
       if (rows.length === 0) {
         return `<p class="muted">WORK.${escapeHtml(name)} は空です。</p>`;
@@ -641,10 +1117,101 @@ run;`
       const head = columns.map((column) => `<th>${escapeHtml(column)}</th>`).join("");
       const heading = title || `WORK.${name}`;
 
-      return `<h2>${escapeHtml(heading)}</h2><p class="table-meta">WORK.${escapeHtml(name)} / ${rows.length} observations</p><table><thead><tr><th>Obs</th>${head}</tr></thead><tbody>${rows.map((row, index) => {
+      return `<h2>${escapeHtml(heading)}</h2><p class="table-meta">WORK.${escapeHtml(name)} / ${rows.length} observations</p><table><thead><tr><th class="obs-head">Obs</th>${head}</tr></thead><tbody>${rows.map((row, index) => {
         const cells = columns.map((column) => `<td>${escapeHtml(String(row[column]))}</td>`).join("");
-        return `<tr><td>${index + 1}</td>${cells}</tr>`;
+        return `<tr><td class="obs-cell">${index + 1}</td>${cells}</tr>`;
       }).join("")}</tbody></table>`;
+    }
+
+    function renderMeans(name, rows, selectedColumns, classColumn, title) {
+      if (rows.length === 0) {
+        return `<p class="muted">WORK.${escapeHtml(name)} は集計対象がありません。</p>`;
+      }
+
+      const availableColumns = Object.keys(rows[0]);
+      const numericColumns = availableColumns.filter((column) => typeof rows[0][column] === "number");
+      const columns = selectedColumns.length ? selectedColumns : numericColumns;
+      const missingColumns = columns.filter((column) => !availableColumns.includes(column));
+      if (missingColumns.length) {
+        throw new Error(`var: 変数 ${missingColumns.join(", ")} が見つかりません`);
+      }
+
+      const nonNumericColumns = columns.filter((column) => typeof rows[0][column] !== "number");
+      if (nonNumericColumns.length) {
+        throw new Error(`proc means: 数値ではない変数 ${nonNumericColumns.join(", ")} は集計できません`);
+      }
+
+      if (classColumn && !availableColumns.includes(classColumn)) {
+        throw new Error(`class: 変数 ${classColumn} が見つかりません`);
+      }
+
+      const groups = new Map();
+      rows.forEach((row) => {
+        const key = classColumn ? row[classColumn] : "All";
+        if (!groups.has(key)) {
+          groups.set(key, []);
+        }
+        groups.get(key).push(row);
+      });
+
+      const resultRows = [];
+      groups.forEach((groupRows, groupName) => {
+        columns.forEach((column) => {
+          const values = groupRows.map((row) => Number(row[column]));
+          const sum = values.reduce((total, value) => total + value, 0);
+          const mean = sum / values.length;
+          resultRows.push({
+            group: groupName,
+            variable: column,
+            n: values.length,
+            mean: formatNumber(mean),
+            min: formatNumber(Math.min(...values)),
+            max: formatNumber(Math.max(...values)),
+            sum: formatNumber(sum)
+          });
+        });
+      });
+
+      const heading = title || `WORK.${name} Summary`;
+      const groupHeader = classColumn || "Group";
+      return `<h2>${escapeHtml(heading)}</h2><p class="table-meta">WORK.${escapeHtml(name)} / ${rows.length} observations</p><table><thead><tr><th>${escapeHtml(groupHeader)}</th><th>Variable</th><th>N</th><th>Mean</th><th>Min</th><th>Max</th><th>Sum</th></tr></thead><tbody>${resultRows.map((row) => `<tr><td>${escapeHtml(String(row.group))}</td><td>${escapeHtml(row.variable)}</td><td>${row.n}</td><td>${row.mean}</td><td>${row.min}</td><td>${row.max}</td><td>${row.sum}</td></tr>`).join("")}</tbody></table>`;
+    }
+
+    function renderFreq(name, rows, tableColumns, title) {
+      if (rows.length === 0) {
+        return `<p class="muted">WORK.${escapeHtml(name)} は集計対象がありません。</p>`;
+      }
+
+      const availableColumns = Object.keys(rows[0]);
+      const missingColumns = tableColumns.filter((column) => !availableColumns.includes(column));
+      if (missingColumns.length) {
+        throw new Error(`tables: 変数 ${missingColumns.join(", ")} が見つかりません`);
+      }
+
+      const heading = title || `WORK.${name} Frequency`;
+      const tables = tableColumns.map((column) => {
+        const counts = new Map();
+        rows.forEach((row) => {
+          const key = String(row[column]);
+          counts.set(key, (counts.get(key) || 0) + 1);
+        });
+
+        const body = [...counts.entries()]
+          .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+          .map(([value, count]) => {
+            const percent = formatNumber(count / rows.length * 100);
+            return `<tr><td>${escapeHtml(value)}</td><td>${count}</td><td>${percent}%</td></tr>`;
+          })
+          .join("");
+
+        return `<h2>${escapeHtml(heading)}: ${escapeHtml(column)}</h2><p class="table-meta">WORK.${escapeHtml(name)} / ${rows.length} observations</p><table><thead><tr><th>${escapeHtml(column)}</th><th>Frequency</th><th>Percent</th></tr></thead><tbody>${body}</tbody></table>`;
+      });
+
+      return tables.join("");
+    }
+
+    function formatNumber(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(2);
     }
 
     function escapeHtml(value) {
@@ -661,9 +1228,11 @@ run;`
       const log = [];
       const output = [];
       datasets = {};
+      let currentStatement = "";
 
       try {
         for (let i = 0; i < lines.length;) {
+          currentStatement = lines[i];
           if (/^data\s+/i.test(lines[i])) {
             i = runDataStep(lines, i, log);
             continue;
@@ -671,6 +1240,21 @@ run;`
 
           if (/^proc\s+print/i.test(lines[i])) {
             i = runProcPrint(lines, i, log, output);
+            continue;
+          }
+
+          if (/^proc\s+sort/i.test(lines[i])) {
+            i = runProcSort(lines, i, log);
+            continue;
+          }
+
+          if (/^proc\s+means/i.test(lines[i])) {
+            i = runProcMeans(lines, i, log, output);
+            continue;
+          }
+
+          if (/^proc\s+freq/i.test(lines[i])) {
+            i = runProcFreq(lines, i, log, output);
             continue;
           }
 
@@ -683,10 +1267,60 @@ run;`
         showView(output.length ? "output" : "log");
       } catch (error) {
         log.push(`ERROR: ${error.message}`);
+        log.push(`原因候補: ${explainError(error.message, currentStatement)}`);
+        if (currentStatement) {
+          log.push(`確認する文: ${currentStatement}`);
+        }
         logView.innerHTML = `<pre class="error">${escapeHtml(log.join("\n"))}</pre>`;
         outputView.innerHTML = `<pre class="muted">エラーが出たので、表づくりはいったんお休みです。</pre>`;
         showView("log");
       }
+    }
+
+    function explainError(message, statement) {
+      if (/run; が見つかりません/.test(message)) {
+        return "ステップの最後に run; がありません。SASでは締めの一文を忘れると、そこで作業が止まります。";
+      }
+
+      if (/datalines; が必要/.test(message)) {
+        return "dataステップに datalines; がありません。input だけ書いても、読み込むデータがなければ表は作れません。";
+      }
+
+      if (/input文が必要/.test(message)) {
+        return "列名を定義する input 文がありません。company、area、sector、sales のように先に列を決めてください。";
+      }
+
+      if (/が見つかりません/.test(message)) {
+        return "where、var、計算式のどこかで存在しない変数名を使っています。スペルと列名を見直してください。";
+      }
+
+      if (/対応していないwhere条件|対応していない式/.test(message)) {
+        return "このミニ環境で扱えるのは、四則演算、比較演算、and/or/not、括弧、文字列比較までです。関数や特殊構文はまだ対象外です。";
+      }
+
+      if (/対応していない文/.test(message)) {
+        return statement && !/;\s*$/.test(statement)
+          ? "セミコロンが抜けている可能性が高いです。文末に ; を付けてください。"
+          : "dataステップか proc print 以外の文が混ざっています。この環境で対応している文だけに絞ってください。";
+      }
+
+      if (/proc print: データセット/.test(message)) {
+        return "proc の data= に指定したデータセットが作成されていません。data regional_survey; と data=regional_survey が一致しているか確認してください。";
+      }
+
+      if (/proc sort:/.test(message)) {
+        return "PROC SORTの指定が崩れています。data=、out=、by、run; のどれかを確認してください。並べ替え表はここが生命線です。";
+      }
+
+      if (/proc means:/.test(message)) {
+        return "PROC MEANSの集計指定が崩れています。data=、class、var、数値変数、run; を確認してください。文字列変数は平均できません。";
+      }
+
+      if (/proc freq:/.test(message)) {
+        return "PROC FREQの頻度表指定が崩れています。data=、tables、run; を確認してください。tables文なしでは分布は出ません。";
+      }
+
+      return "直前に実行していた文を確認してください。セミコロン、変数名、where条件、varの列指定のどれかが怪しいです。";
     }
 
     function showView(view) {
@@ -702,13 +1336,20 @@ run;`
       answerButton.textContent = "答えを見る";
     }
 
+    function clearFeedback() {
+      feedbackBox.hidden = true;
+      feedbackBox.classList.remove("good");
+      feedbackBox.innerHTML = "";
+    }
+
     function showChallenge() {
       const challengeList = challenges[currentDifficulty];
       challengeIndex[currentDifficulty] = (challengeIndex[currentDifficulty] + 1) % challengeList.length;
-      const challenge = challengeList[challengeIndex[currentDifficulty]];
-      challengeText.textContent = challenge.text;
-      challengeHint.textContent = challenge.hint;
+      currentChallenge = challengeList[challengeIndex[currentDifficulty]];
+      challengeText.textContent = currentChallenge.text;
+      challengeHint.textContent = currentChallenge.hint;
       closeAnswer();
+      clearFeedback();
     }
 
     function setDifficulty(level) {
@@ -724,9 +1365,148 @@ run;`
       answerButton.textContent = challengeHint.hidden ? "答えを見る" : "答えを閉じる";
     }
 
+    function extractProcPrint(program) {
+      const statements = tokenize(program);
+      const startIndex = statements.findIndex((statement) => /^proc\s+print\b/i.test(statement));
+      if (startIndex < 0) {
+        return "";
+      }
+
+      const procStatements = [];
+      for (let i = startIndex; i < statements.length; i += 1) {
+        procStatements.push(statements[i]);
+        if (/^run\s*;?$/i.test(statements[i])) {
+          break;
+        }
+      }
+
+      return procStatements.join("\n");
+    }
+
+    function normalizeWhere(value) {
+      return stripStatementEnd(value)
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .replace(/\s*(>=|<=|\^=|~=|!=|=|>|<)\s*/g, "$1")
+        .replace(/\s+(and|or)\s+/g, " $1 ")
+        .trim();
+    }
+
+    function parseProcPrint(program) {
+      const proc = extractProcPrint(program);
+      if (!proc) {
+        return null;
+      }
+
+      const dataMatch = proc.match(/proc\s+print\s+data\s*=\s*([A-Za-z_][A-Za-z0-9_]*)/i);
+      const whereMatch = proc.match(/where\s+(.+?)\s*;/i);
+      const varMatch = proc.match(/var\s+(.+?)\s*;/i);
+      const titleMatch = proc.match(/title\s+["']?(.+?)["']?\s*;/i);
+
+      return {
+        data: dataMatch ? dataMatch[1].toLowerCase() : "",
+        where: whereMatch ? normalizeWhere(whereMatch[1]) : "",
+        vars: varMatch ? stripStatementEnd(varMatch[1]).toLowerCase().split(/\s+/).filter(Boolean) : [],
+        title: titleMatch ? stripStatementEnd(titleMatch[1]).replace(/^["']|["']$/g, "").toLowerCase() : ""
+      };
+    }
+
+    function sameArray(left, right) {
+      return left.length === right.length && left.every((value, index) => value === right[index]);
+    }
+
+    function gradeAnswer() {
+      if (!currentChallenge) {
+        showChallenge();
+      }
+
+      const expectedStatements = tokenize(currentChallenge.hint)
+        .filter((statement) => !/^run\s*;?$/i.test(statement))
+        .map(normalizeAnswerStatement);
+      const actualStatements = tokenize(editor.value).map(normalizeAnswerStatement);
+      const missing = expectedStatements.filter((statement) => !actualStatements.includes(statement));
+      const matched = expectedStatements.length - missing.length;
+      const score = Math.round(matched / expectedStatements.length * 100);
+
+      if (score === 100) {
+        showFeedback(100, [
+          "よし、満点です。手順、条件、列指定、タイトルまで揃っています。",
+          "この水準なら調査票の一次加工は任せられます。次は説明資料まで意識してください。"
+        ]);
+        return;
+      }
+
+      const messages = missing.map(explainMissingStatement);
+      showFeedback(score, messages);
+    }
+
+    function normalizeAnswerStatement(statement) {
+      return stripStatementEnd(statement)
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .replace(/\s*(>=|<=|\^=|~=|!=|=|>|<)\s*/g, "$1")
+        .trim();
+    }
+
+    function explainMissingStatement(statement) {
+      if (/^proc\s+sort/.test(statement)) {
+        return `並べ替えの指定が違います。「${statement}」が必要です。順位表を作る問題でソートを外すのは、資料の骨格を抜くのと同じです。`;
+      }
+
+      if (/^proc\s+means/.test(statement)) {
+        return `集計プロシジャが違います。「${statement}」が必要です。平均や合計を見たいのに一覧表だけ出しても、分析とは呼べません。`;
+      }
+
+      if (/^proc\s+freq/.test(statement)) {
+        return `頻度表の指定が違います。「${statement}」が必要です。分布確認の問題で件数を出さないのは、かなり厳しいです。`;
+      }
+
+      if (/^proc\s+print/.test(statement)) {
+        return `一覧表の対象データが違います。「${statement}」が必要です。data= の指定を軽く扱わないでください。`;
+      }
+
+      if (/^where\s+/.test(statement)) {
+        return `where条件が違います。期待値は「${statement}」です。抽出条件は分析結果そのものを変えます。ここは雑にやる場所ではありません。`;
+      }
+
+      if (/^var\s+/.test(statement)) {
+        return `varの列指定が違います。期待値は「${statement}」です。列の順番まで報告表の設計です。`;
+      }
+
+      if (/^class\s+/.test(statement)) {
+        return `class指定が違います。期待値は「${statement}」です。何でグルーピングするかを外したら、比較表になりません。`;
+      }
+
+      if (/^tables\s+/.test(statement)) {
+        return `tables指定が違います。期待値は「${statement}」です。頻度を見る軸を間違えると、読み手が判断できません。`;
+      }
+
+      if (/^by\s+/.test(statement)) {
+        return `by指定が違います。期待値は「${statement}」です。並べ替え順を間違えると、ランキング表として信用できません。`;
+      }
+
+      if (/^title\s+/.test(statement)) {
+        return `titleが違います。期待値は「${statement}」です。何の表か分からない成果物は、会議に出す前に差し戻しです。`;
+      }
+
+      return `必要な文が不足しています。「${statement}」を確認してください。`;
+    }
+
+    function showFeedback(score, messages) {
+      feedbackBox.hidden = false;
+      feedbackBox.classList.toggle("good", score === 100);
+      feedbackBox.innerHTML = `<p class="feedback-title">採点: ${score}点</p><ul>${messages.map((message) => `<li>${escapeHtml(message)}</li>`).join("")}</ul>`;
+    }
+
     runButton.addEventListener("click", runProgram);
     challengeButton.addEventListener("click", showChallenge);
+    checkButton.addEventListener("click", gradeAnswer);
     answerButton.addEventListener("click", toggleAnswer);
+    generateDataButton.addEventListener("click", () => {
+      editor.value = generateRegionalSurveyCode(Number(rowCount.value));
+      clearFeedback();
+      runProgram();
+    });
     difficultyButtons.forEach((button) => {
       button.addEventListener("click", () => setDifficulty(button.dataset.level));
     });
@@ -736,7 +1516,7 @@ run;`
     });
     clearButton.addEventListener("click", () => {
       logView.innerHTML = `<pre class="muted">実行すると、ここにSAS風の足あとが残ります。</pre>`;
-      outputView.innerHTML = `<pre class="muted">PROC PRINTで作った表は、ここにきれいに並びます。</pre>`;
+      outputView.innerHTML = `<pre class="muted">PROCで作った分析表は、ここにきれいに並びます。</pre>`;
       showView("log");
     });
 
