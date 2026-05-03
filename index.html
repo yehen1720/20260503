@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>カウンター</title>
+  <title>SAS風ミニ実行環境</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,189 +12,740 @@
     body {
       margin: 0;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #1f2937;
-      background: #f7f4ef;
+      color: #172033;
+      background: #f8fafc;
     }
 
-    main {
-      position: relative;
-      overflow: hidden;
-      width: min(90vw, 360px);
-      padding: 32px;
-      text-align: center;
+    header {
+      padding: 24px 28px 18px;
+      color: #172033;
       background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      box-shadow: 0 18px 40px rgba(31, 41, 55, 0.12);
+      border-bottom: 1px solid #d8dee9;
     }
 
     h1 {
-      margin: 0 0 20px;
+      margin: 0;
       font-size: 28px;
-      font-weight: 700;
+      letter-spacing: 0;
     }
 
-    .count {
-      margin: 0 0 24px;
-      font-size: 72px;
-      line-height: 1;
-      font-weight: 800;
-      color: #0f766e;
-      font-variant-numeric: tabular-nums;
+    .subtitle {
+      margin: 6px 0 0;
+      color: #526173;
+      font-size: 14px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+      gap: 18px;
+      padding: 18px;
+    }
+
+    section {
+      min-width: 0;
+      background: #ffffff;
+      border: 1px solid #d8dee9;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 48px;
+      padding: 10px 14px;
+      font-weight: 700;
+      color: #172033;
+      background: #eef3f8;
+      border-bottom: 1px solid #d8dee9;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 440px;
+      padding: 16px;
+      resize: vertical;
+      border: 0;
+      outline: none;
+      font: 15px/1.55 Consolas, "Courier New", monospace;
+      color: #172033;
+      background:
+        linear-gradient(90deg, rgba(29, 78, 216, 0.08) 0 3px, transparent 3px),
+        #fbfdff;
+      caret-color: #1d4ed8;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid #d8dee9;
+      background: #ffffff;
     }
 
     button {
-      width: 100%;
-      min-height: 48px;
-      border: 0;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid transparent;
       border-radius: 8px;
       font: inherit;
       font-weight: 700;
-      color: #ffffff;
-      background: #0f766e;
       cursor: pointer;
-      transition: transform 120ms ease, background 120ms ease;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
     }
 
     button:hover {
-      background: #115e59;
+      transform: translateY(-1px);
     }
 
-    button:active {
-      transform: translateY(1px);
+    .primary {
+      color: #ffffff;
+      background: #1d4ed8;
+      box-shadow: 0 8px 18px rgba(29, 78, 216, 0.2);
     }
 
-    .effect {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
+    .secondary {
+      color: #172033;
+      background: #f3f6fa;
+      border-color: #d1d9e6;
     }
 
-    .effect.show {
-      opacity: 1;
+    .tabs {
+      display: flex;
+      gap: 6px;
     }
 
-    .spark {
-      position: absolute;
-      left: 50%;
-      top: 44%;
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--color);
-      transform: translate(-50%, -50%);
+    .tab {
+      min-height: 32px;
+      padding: 0 10px;
+      color: #526173;
+      background: #ffffff;
+      border-color: #cbd5e1;
     }
 
-    .effect.show .spark {
-      animation: burst 760ms ease-out forwards;
+    .tab.active {
+      color: #ffffff;
+      background: #1d4ed8;
+      border-color: #1d4ed8;
     }
 
-    .spark:nth-child(1) {
-      --x: 0px;
-      --y: -92px;
-      --color: #f97316;
+    .output {
+      min-height: 509px;
+      max-height: 70vh;
+      padding: 16px;
+      overflow: auto;
+      color: #172033;
+      background: #ffffff;
     }
 
-    .spark:nth-child(2) {
-      --x: 72px;
-      --y: -68px;
-      --color: #0ea5e9;
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font: 14px/1.55 Consolas, "Courier New", monospace;
     }
 
-    .spark:nth-child(3) {
-      --x: 96px;
-      --y: 0px;
-      --color: #14b8a6;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      overflow: hidden;
+      border: 1px solid #d8dee9;
+      border-radius: 8px;
     }
 
-    .spark:nth-child(4) {
-      --x: 68px;
-      --y: 72px;
-      --color: #eab308;
+    h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
     }
 
-    .spark:nth-child(5) {
-      --x: 0px;
-      --y: 92px;
-      --color: #ec4899;
+    .table-meta {
+      margin: 0 0 12px;
+      color: #64748b;
+      font-size: 13px;
     }
 
-    .spark:nth-child(6) {
-      --x: -68px;
-      --y: 72px;
-      --color: #8b5cf6;
+    th,
+    td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #d8dee9;
     }
 
-    .spark:nth-child(7) {
-      --x: -96px;
-      --y: 0px;
-      --color: #ef4444;
+    th {
+      color: #172033;
+      background: #e0f2fe;
     }
 
-    .spark:nth-child(8) {
-      --x: -72px;
-      --y: -68px;
-      --color: #22c55e;
+    tr:nth-child(even) td {
+      background: #f8fafc;
     }
 
-    @keyframes burst {
-      0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0.2);
+    .note {
+      color: #166534;
+    }
+
+    .error {
+      color: #b91c1c;
+    }
+
+    .muted {
+      color: #64748b;
+    }
+
+    .challenge {
+      padding: 14px;
+      border-top: 1px solid #d8dee9;
+      background: #f8fafc;
+    }
+
+    .challenge-title {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #1d4ed8;
+    }
+
+    .challenge-text {
+      margin: 0 0 10px;
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .challenge-code {
+      margin: 0;
+      padding: 10px;
+      border: 1px solid #d8dee9;
+      border-radius: 8px;
+      color: #172033;
+      background: #ffffff;
+    }
+
+    .difficulty {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+
+    .difficulty-button {
+      min-height: 34px;
+      padding: 0 12px;
+      font-size: 14px;
+      color: #526173;
+      background: #ffffff;
+      border-color: #cbd5e1;
+    }
+
+    .difficulty-button.active {
+      color: #ffffff;
+      background: #0f766e;
+      border-color: #0f766e;
+    }
+
+    .challenge-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 10px;
+    }
+
+    @media (max-width: 820px) {
+      main {
+        grid-template-columns: 1fr;
       }
 
-      70% {
-        opacity: 1;
-      }
-
-      100% {
-        opacity: 0;
-        transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.2);
+      textarea {
+        min-height: 360px;
       }
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>SAS風ミニ実行環境</h1>
+    <p class="subtitle">dataステップ、where、var、title、四則演算、proc printを疑似実行できます。</p>
+  </header>
+
   <main>
-    <h1>カウンター</h1>
-    <p class="count" id="count">0</p>
-    <button type="button" id="countButton">カウントを増やす</button>
-    <div class="effect" id="effect" aria-hidden="true">
-      <span class="spark"></span>
-      <span class="spark"></span>
-      <span class="spark"></span>
-      <span class="spark"></span>
-      <span class="spark"></span>
-      <span class="spark"></span>
-      <span class="spark"></span>
-      <span class="spark"></span>
-    </div>
+    <section>
+      <div class="section-title">
+        <span>エディタ</span>
+      </div>
+      <textarea id="editor" spellcheck="false">data scores;
+input name $ math english;
+total = math + english;
+average = total / 2;
+datalines;
+Tanaka 80 92
+Suzuki 74 88
+Sato 95 91
+;
+run;
+
+proc print data=scores;
+where total >= 165 and english > 90;
+var name math english total average;
+title "High Score Students";
+run;</textarea>
+      <div class="toolbar">
+        <button class="primary" type="button" id="runButton">実行</button>
+        <button class="secondary" type="button" id="challengeButton">次の問題</button>
+        <button class="secondary" type="button" id="sampleButton">サンプルに戻す</button>
+        <button class="secondary" type="button" id="clearButton">ログを消す</button>
+      </div>
+      <div class="challenge" id="challengeBox">
+        <p class="challenge-title">初学者向けミッション</p>
+        <div class="difficulty" aria-label="問題の難易度">
+          <button class="difficulty-button active" type="button" data-level="basic">初級</button>
+          <button class="difficulty-button" type="button" data-level="standard">中級</button>
+          <button class="difficulty-button" type="button" data-level="advanced">上級</button>
+        </div>
+        <p class="challenge-text" id="challengeText">「次の問題」を押すと、PROC PRINTで作る表のお題が表示されます。</p>
+        <div class="challenge-actions">
+          <button class="secondary" type="button" id="answerButton">答えを見る</button>
+        </div>
+        <pre class="challenge-code" id="challengeHint" hidden>例: where total >= 165; var name total;</pre>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span>実行レポート</span>
+        <div class="tabs" role="tablist">
+          <button class="tab active" type="button" data-view="log">LOG</button>
+          <button class="tab" type="button" data-view="output">TABLE</button>
+        </div>
+      </div>
+      <div class="output" id="logView">
+        <pre class="muted">実行すると、ここにSAS風の足あとが残ります。</pre>
+      </div>
+      <div class="output" id="outputView" hidden>
+        <pre class="muted">PROC PRINTで作った表は、ここにきれいに並びます。</pre>
+      </div>
+    </section>
   </main>
 
   <script>
-    const countDisplay = document.getElementById("count");
-    const countButton = document.getElementById("countButton");
-    const effect = document.getElementById("effect");
-    let count = 0;
+    const sampleCode = `data scores;
+input name $ math english;
+total = math + english;
+average = total / 2;
+datalines;
+Tanaka 80 92
+Suzuki 74 88
+Sato 95 91
+;
+run;
 
-    countButton.addEventListener("click", () => {
-      count += 1;
-      countDisplay.textContent = count;
+proc print data=scores;
+where total >= 165 and english > 90;
+var name math english total average;
+title "High Score Students";
+run;`;
 
-      if (count === 20) {
-        effect.classList.remove("show");
-        void effect.offsetWidth;
-        effect.classList.add("show");
+    const editor = document.getElementById("editor");
+    const runButton = document.getElementById("runButton");
+    const challengeButton = document.getElementById("challengeButton");
+    const answerButton = document.getElementById("answerButton");
+    const sampleButton = document.getElementById("sampleButton");
+    const clearButton = document.getElementById("clearButton");
+    const challengeText = document.getElementById("challengeText");
+    const challengeHint = document.getElementById("challengeHint");
+    const logView = document.getElementById("logView");
+    const outputView = document.getElementById("outputView");
+    const tabs = document.querySelectorAll(".tab");
+    const difficultyButtons = document.querySelectorAll(".difficulty-button");
+    const challenges = {
+      basic: [
+        {
+          text: "合計点が165点以上の人だけを表示する表を作成してみよう。表示する列は name、total、average にします。",
+          hint: `proc print data=scores;
+where total >= 165;
+var name total average;
+title "Total 165 or More";
+run;`
+        },
+        {
+          text: "英語が90点より高い人だけを表示する表を作成してみよう。表示する列は name、english、total にします。",
+          hint: `proc print data=scores;
+where english > 90;
+var name english total;
+title "English Stars";
+run;`
+        }
+      ],
+      standard: [
+        {
+          text: "数学が80点以上、かつ英語が90点以上の人を表示する表を作成してみよう。",
+          hint: `proc print data=scores;
+where math >= 80 and english >= 90;
+var name math english;
+title "Balanced Scores";
+run;`
+        },
+        {
+          text: "Suzukiさん以外、または合計点が180点以上の人を表示する表を作成してみよう。",
+          hint: `proc print data=scores;
+where name ^= "Suzuki" or total >= 180;
+var name math english total;
+title "Selected Students";
+run;`
+        }
+      ],
+      advanced: [
+        {
+          text: "Suzukiさん以外で、合計点が165点以上の人だけを表示する表を作成してみよう。",
+          hint: `proc print data=scores;
+where name ^= "Suzuki" and total >= 165;
+var name math english total average;
+title "High Scores Without Suzuki";
+run;`
+        },
+        {
+          text: "平均点が85点以上、または英語が92点以上の人を表示する表を作成してみよう。",
+          hint: `proc print data=scores;
+where average >= 85 or english >= 92;
+var name english average total;
+title "Advanced Filter";
+run;`
+        }
+      ]
+    };
+    let datasets = {};
+    let currentDifficulty = "basic";
+    let challengeIndex = {
+      basic: -1,
+      standard: -1,
+      advanced: -1
+    };
+
+    function tokenize(program) {
+      return program
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/\r/g, "")
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line && !/^\*.*;?$/.test(line));
+    }
+
+    function parseValue(value) {
+      const number = Number(value);
+      return Number.isFinite(number) ? number : value;
+    }
+
+    function stripStatementEnd(value) {
+      return value.trim().replace(/;$/, "").trim();
+    }
+
+    function evaluateExpression(expression, row) {
+      return evaluateSasExpression(expression, row, "式");
+    }
+
+    function evaluateWhere(expression, row) {
+      return Boolean(evaluateSasExpression(expression, row, "where条件"));
+    }
+
+    function evaluateSasExpression(expression, row, label) {
+      const strings = [];
+      let safeExpression = expression.replace(/"[^"]*"|'[^']*'/g, (value) => {
+        strings.push(value);
+        return `__STRING_${strings.length - 1}__`;
+      });
+
+      safeExpression = safeExpression
+        .replace(/\bAND\b/gi, "&&")
+        .replace(/\bOR\b/gi, "||")
+        .replace(/\bNOT\b/gi, "!")
+        .replace(/\^=|~=/g, "!=")
+        .replace(/(?<![<>=!])=(?!=)/g, "==");
+
+      safeExpression = safeExpression.replace(/[A-Za-z_][A-Za-z0-9_]*/g, (name) => {
+        const stringMatch = name.match(/^__STRING_(\d+)__$/);
+        if (stringMatch) {
+          return strings[Number(stringMatch[1])];
+        }
+
+        if (!(name in row)) {
+          throw new Error(`${name} が見つかりません`);
+        }
+
+        return JSON.stringify(row[name]);
+      });
+
+      if (!/^[\d\s+\-*\/().<>=!&|"'A-Za-z0-9_]+$/.test(safeExpression)) {
+        throw new Error(`対応していない${label}です`);
       }
+
+      return Function(`"use strict"; return (${safeExpression});`)();
+    }
+
+    function runDataStep(lines, startIndex, log) {
+      const dataMatch = lines[startIndex].match(/^data\s+([A-Za-z_][A-Za-z0-9_]*)\s*;?$/i);
+      const name = dataMatch[1];
+      let inputColumns = [];
+      const assignments = [];
+      let whereExpression = "";
+      let datalineIndex = -1;
+      let runIndex = -1;
+
+      for (let i = startIndex + 1; i < lines.length; i += 1) {
+        const line = lines[i];
+
+        if (/^run\s*;?$/i.test(line)) {
+          runIndex = i;
+          break;
+        }
+
+        if (/^datalines\s*;?$/i.test(line) || /^cards\s*;?$/i.test(line)) {
+          datalineIndex = i;
+          continue;
+        }
+
+        if (datalineIndex >= 0) {
+          continue;
+        }
+
+        const inputMatch = line.match(/^input\s+(.+?)\s*;?$/i);
+        if (inputMatch) {
+          inputColumns = stripStatementEnd(inputMatch[1])
+            .split(/\s+/)
+            .filter((column) => column !== "$")
+            .map((column) => column.replace(/\$/g, ""));
+          continue;
+        }
+
+        const assignmentMatch = line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+?)\s*;?$/);
+        if (assignmentMatch) {
+          assignments.push({
+            name: assignmentMatch[1],
+            expression: stripStatementEnd(assignmentMatch[2])
+          });
+          continue;
+        }
+
+        const whereMatch = line.match(/^where\s+(.+?)\s*;?$/i);
+        if (whereMatch) {
+          whereExpression = stripStatementEnd(whereMatch[1]);
+        }
+      }
+
+      if (runIndex < 0) {
+        throw new Error(`${name}: run; が見つかりません`);
+      }
+
+      if (inputColumns.length === 0) {
+        throw new Error(`${name}: input文が必要です`);
+      }
+
+      if (datalineIndex < 0) {
+        throw new Error(`${name}: datalines; が必要です`);
+      }
+
+      const rows = [];
+      for (let i = datalineIndex + 1; i < runIndex; i += 1) {
+        if (lines[i] === ";") {
+          break;
+        }
+
+        const values = lines[i].split(/\s+/);
+        const row = {};
+        inputColumns.forEach((column, index) => {
+          row[column] = parseValue(values[index] ?? "");
+        });
+
+        assignments.forEach((assignment) => {
+          row[assignment.name] = evaluateExpression(assignment.expression, row);
+        });
+
+        if (!whereExpression || evaluateWhere(whereExpression, row)) {
+          rows.push(row);
+        }
+      }
+
+      datasets[name.toLowerCase()] = rows;
+      log.push(`NOTE: データセット WORK.${name} を作成しました。観測数 ${rows.length}、変数 ${Object.keys(rows[0] ?? {}).length}。`);
+
+      return runIndex + 1;
+    }
+
+    function runProcPrint(lines, startIndex, log, output) {
+      const firstLine = lines[startIndex];
+      const dataMatch = firstLine.match(/data\s*=\s*([A-Za-z_][A-Za-z0-9_]*)/i);
+      const name = dataMatch ? dataMatch[1].toLowerCase() : Object.keys(datasets)[0];
+      let whereExpression = "";
+      let selectedColumns = [];
+      let title = "";
+      let runIndex = -1;
+
+      for (let i = startIndex + 1; i < lines.length; i += 1) {
+        if (/^run\s*;?$/i.test(lines[i])) {
+          runIndex = i;
+          break;
+        }
+
+        const whereMatch = lines[i].match(/^where\s+(.+?)\s*;?$/i);
+        if (whereMatch) {
+          whereExpression = stripStatementEnd(whereMatch[1]);
+          continue;
+        }
+
+        const varMatch = lines[i].match(/^var\s+(.+?)\s*;?$/i);
+        if (varMatch) {
+          selectedColumns = stripStatementEnd(varMatch[1]).split(/\s+/).filter(Boolean);
+          continue;
+        }
+
+        const titleMatch = lines[i].match(/^title\s+["']?(.+?)["']?\s*;?$/i);
+        if (titleMatch) {
+          title = stripStatementEnd(titleMatch[1]).replace(/^["']|["']$/g, "");
+        }
+      }
+
+      if (runIndex < 0) {
+        throw new Error("proc print: run; が見つかりません");
+      }
+
+      if (!name || !datasets[name]) {
+        throw new Error(`proc print: データセット ${name || "(未指定)"} が見つかりません`);
+      }
+
+      const rows = whereExpression
+        ? datasets[name].filter((row) => evaluateWhere(whereExpression, row))
+        : [...datasets[name]];
+
+      output.push(renderTable(name, rows, selectedColumns, title));
+      log.push(`NOTE: PROC PRINT は WORK.${name} を出力しました。観測数 ${rows.length}。`);
+
+      return runIndex + 1;
+    }
+
+    function renderTable(name, rows, selectedColumns = [], title = "") {
+      if (rows.length === 0) {
+        return `<p class="muted">WORK.${escapeHtml(name)} は空です。</p>`;
+      }
+
+      const availableColumns = Object.keys(rows[0]);
+      const columns = selectedColumns.length ? selectedColumns : availableColumns;
+      const missingColumns = columns.filter((column) => !availableColumns.includes(column));
+      if (missingColumns.length) {
+        throw new Error(`var: 変数 ${missingColumns.join(", ")} が見つかりません`);
+      }
+
+      const head = columns.map((column) => `<th>${escapeHtml(column)}</th>`).join("");
+      const heading = title || `WORK.${name}`;
+
+      return `<h2>${escapeHtml(heading)}</h2><p class="table-meta">WORK.${escapeHtml(name)} / ${rows.length} observations</p><table><thead><tr><th>Obs</th>${head}</tr></thead><tbody>${rows.map((row, index) => {
+        const cells = columns.map((column) => `<td>${escapeHtml(String(row[column]))}</td>`).join("");
+        return `<tr><td>${index + 1}</td>${cells}</tr>`;
+      }).join("")}</tbody></table>`;
+    }
+
+    function escapeHtml(value) {
+      return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function runProgram() {
+      const lines = tokenize(editor.value);
+      const log = [];
+      const output = [];
+      datasets = {};
+
+      try {
+        for (let i = 0; i < lines.length;) {
+          if (/^data\s+/i.test(lines[i])) {
+            i = runDataStep(lines, i, log);
+            continue;
+          }
+
+          if (/^proc\s+print/i.test(lines[i])) {
+            i = runProcPrint(lines, i, log, output);
+            continue;
+          }
+
+          throw new Error(`対応していない文です: ${lines[i]}`);
+        }
+
+        log.unshift("NOTE: SAS風ミニ実行環境がコードを読み解きました。");
+        logView.innerHTML = `<pre class="note">${escapeHtml(log.join("\n"))}</pre>`;
+        outputView.innerHTML = output.length ? output.join("") : `<pre class="muted">今回は表示する表がありませんでした。</pre>`;
+        showView(output.length ? "output" : "log");
+      } catch (error) {
+        log.push(`ERROR: ${error.message}`);
+        logView.innerHTML = `<pre class="error">${escapeHtml(log.join("\n"))}</pre>`;
+        outputView.innerHTML = `<pre class="muted">エラーが出たので、表づくりはいったんお休みです。</pre>`;
+        showView("log");
+      }
+    }
+
+    function showView(view) {
+      logView.hidden = view !== "log";
+      outputView.hidden = view !== "output";
+      tabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.view === view);
+      });
+    }
+
+    function closeAnswer() {
+      challengeHint.hidden = true;
+      answerButton.textContent = "答えを見る";
+    }
+
+    function showChallenge() {
+      const challengeList = challenges[currentDifficulty];
+      challengeIndex[currentDifficulty] = (challengeIndex[currentDifficulty] + 1) % challengeList.length;
+      const challenge = challengeList[challengeIndex[currentDifficulty]];
+      challengeText.textContent = challenge.text;
+      challengeHint.textContent = challenge.hint;
+      closeAnswer();
+    }
+
+    function setDifficulty(level) {
+      currentDifficulty = level;
+      difficultyButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.level === level);
+      });
+      showChallenge();
+    }
+
+    function toggleAnswer() {
+      challengeHint.hidden = !challengeHint.hidden;
+      answerButton.textContent = challengeHint.hidden ? "答えを見る" : "答えを閉じる";
+    }
+
+    runButton.addEventListener("click", runProgram);
+    challengeButton.addEventListener("click", showChallenge);
+    answerButton.addEventListener("click", toggleAnswer);
+    difficultyButtons.forEach((button) => {
+      button.addEventListener("click", () => setDifficulty(button.dataset.level));
+    });
+    sampleButton.addEventListener("click", () => {
+      editor.value = sampleCode;
+      runProgram();
+    });
+    clearButton.addEventListener("click", () => {
+      logView.innerHTML = `<pre class="muted">実行すると、ここにSAS風の足あとが残ります。</pre>`;
+      outputView.innerHTML = `<pre class="muted">PROC PRINTで作った表は、ここにきれいに並びます。</pre>`;
+      showView("log");
     });
 
-    effect.addEventListener("animationend", () => {
-      effect.classList.remove("show");
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => showView(tab.dataset.view));
     });
+
+    showChallenge();
+    runProgram();
   </script>
 </body>
 </html>
